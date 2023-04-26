@@ -32,7 +32,7 @@ create table "patients" (
   obs text
 )
 
-create table "adress" (
+create table "adresses" (
   id serial primary key,
   zip_code text,
   address text,
