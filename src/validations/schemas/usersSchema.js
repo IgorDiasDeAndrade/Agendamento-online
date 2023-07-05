@@ -15,8 +15,8 @@ const usersSchema = joi.object({
     .onlyLatinCharacters()
     .required(),
     email: joi.string().email().required(),
-    phone: joi.string().alphanum().length(9).required(),
-    account_type_id: joi.number().required()
+    phone: joi.string().alphanum().min(9).max(14).required(),
+    account_type_id: joi.number().default(3)
 })
 
 module.exports = usersSchema

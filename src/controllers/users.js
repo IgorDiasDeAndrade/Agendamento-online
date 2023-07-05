@@ -14,19 +14,20 @@ const showUsers = async (req, res) => {
 }
 
 const userSignUp = async (req, res) => {
-    const { name, username, password, email, phone, account_type_id } = req.body
+    const { name, username, password, email, phone} = req.body
 
     try {
 
         const encriptedPassword = await bcrypt.hash(password, 10)
-
+        const account_type_id = 3
+        
         await knex('users').insert({
             name,
             username,
             password: encriptedPassword,
             email,
             phone,
-            account_type_id
+            account_type_id: account_type_id
         })
 
         return res.status(200).json()
@@ -70,8 +71,37 @@ const userLogin = async (req, res) => {
     }
 }
 
+const userListing = async (req, res) => {
+    try {
+        const { password: _, ...currentUser } = req.user
+        return res.json(currentUser)
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
+const updateUser = async (req, res) => {
+    const {name, password, email, phone} = req.body
+    try {
+        const encriptedPassword = await bcrypt.hash(password, 10)
+
+        await knex('users').update({
+            name: name,
+            email: email,
+            password: encriptedPassword,
+            phone: phone
+        }).where({ id: req.user.id})
+        
+        return res.status(200).json()
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
 module.exports = {
     showUsers,
     userSignUp,
-    userLogin
+    userLogin,
+    userListing,
+    updateUser
 }
