@@ -90,8 +90,27 @@ const updateUser = async (req, res) => {
             email: email,
             password: encriptedPassword,
             phone: phone
-        }).where({ id: req.user.id})
+        }).where({ id: req.user.id })
         
+        return res.status(200).json()
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
+const editAccountType = async (req, res) =>{
+    const { id } = req.params
+    const { account_type_id } = req.body
+
+    try {
+        if(req.user.account_type_id != 2){
+            return res.status(401).json({mensagem: "Apenas Administradores podem alterar tipos de contas de outros usuários"})
+        }
+
+        await knex('users').update({
+            account_type_id: account_type_id
+        }).where({id: id})
+
         return res.status(200).json()
     } catch (error) {
         return res.status(500).json({ message: error.message })
@@ -103,5 +122,6 @@ module.exports = {
     userSignUp,
     userLogin,
     userListing,
-    updateUser
+    updateUser,
+    editAccountType
 }
