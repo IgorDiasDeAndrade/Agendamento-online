@@ -25,11 +25,13 @@ create table "patients" (
   id serial primary key,
   cpf text not null unique,
   name text not null,
+  birthday date not null,
   mothers_name text,
   fathers_name text,
   contact_number_1 text not null,
   contact_number_2 text,
   obs text
+  user_id integer references users(id)
 )
 
 create table "adresses" (
