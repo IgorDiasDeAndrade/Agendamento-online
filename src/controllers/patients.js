@@ -41,9 +41,30 @@ const removePatient = async (req, res) => {
     }
 }
 
+const editPatients = async (req, res) => {
+    const {id} = req.params
+    const {cpf, name, birthday, mothers_name, fathers_name, contact_number_1, contact_number_2, obs} = req.body
+    try {
+        await knex('patients').update({
+            cpf,
+            name,
+            birthday,
+            mothers_name,
+            fathers_name,
+            contact_number_1,
+            contact_number_2,
+            obs
+        }).where({id: id})
+        return res.status(200).json()
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
 
 module.exports = {
     showPatients,
     createPatient,
-    removePatient
+    removePatient,
+    editPatients
 }
