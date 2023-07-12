@@ -1,5 +1,14 @@
 const knex = require('../connection')
 
+const showPatients = async (req, res) => {
+    try {
+        const allPatients = await knex('patients')
+        return res.status(200).json({ message: allPatients})
+    } catch (error) {
+        return res.status(500).json({message: error.message})
+    }
+}
+
 const createPatient = async (req, res) => {
     const {cpf, name, birthday, mothers_name, fathers_name, contact_number_1, contact_number_2, obs} = req.body
 
@@ -22,16 +31,19 @@ const createPatient = async (req, res) => {
     }
 }
 
-const showPatients = async (req, res) => {
+const removePatient = async (req, res) => {
+    const {id} = req.params
     try {
-        const allPatients = await knex('patients')
-        return res.status(200).json({ message: allPatients})
+        await knex('patients').where({ id: id }).del()
+        return res.status(200).json()
     } catch (error) {
-        return res.status(500).json({message: error.message})
+        return res.status(500).json(error.message)
     }
 }
 
+
 module.exports = {
+    showPatients,
     createPatient,
-    showPatients
+    removePatient
 }

@@ -5,7 +5,7 @@ const validateBodyRequisition = require('./middlewares/validateBodyRequisition')
 const usersSchema = require('./validations/schemas/usersSchema')
 const patientsSchemas = require('./validations/schemas/patientsSchema')
 const { authentication } = require('./middlewares/authentication')
-const { createPatient, showPatients } = require('./controllers/patients')
+const { createPatient, showPatients, removePatient } = require('./controllers/patients')
 
 routes.get('/', (req, res)=>{
     res.send('Server up')
@@ -22,6 +22,7 @@ routes.put('/user', updateUser)
 routes.patch('/user/:id', editAccountType)
 routes.post('/patients', validateBodyRequisition(patientsSchemas), createPatient)
 routes.get('/patients', showPatients)
+routes.delete('/patients/:id', removePatient)
 
 
 module.exports = routes
