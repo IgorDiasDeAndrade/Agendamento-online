@@ -22,6 +22,16 @@ const createPatient = async (req, res) => {
     }
 }
 
+const showPatients = async (req, res) => {
+    try {
+        const allPatients = await knex('patients')
+        return res.status(200).json({ message: allPatients})
+    } catch (error) {
+        return res.status(500).json({message: error.message})
+    }
+}
+
 module.exports = {
-    createPatient
+    createPatient,
+    showPatients
 }

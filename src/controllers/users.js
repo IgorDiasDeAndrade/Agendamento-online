@@ -7,9 +7,9 @@ const bcrypt = require('bcrypt')
 const showUsers = async (req, res) => {
     try {
         const allUsers = await knex('users')
-        res.status(200).json({message: allUsers})
+        return res.status(200).json({message: allUsers})
     } catch (error) {
-        res.status(500).json({message: error.message})
+        return res.status(500).json({message: error.message})
     }
 }
 
@@ -74,7 +74,7 @@ const userLogin = async (req, res) => {
 const userListing = async (req, res) => {
     try {
         const { password: _, ...currentUser } = req.user
-        return res.json(currentUser)
+        return res.status(200).json(currentUser)
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
