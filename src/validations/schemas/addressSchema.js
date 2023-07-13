@@ -7,7 +7,7 @@ const addressSchema = joi.object({
     neighborhood: joi.string().required(),
     location: joi.string().required(),
     uf: joi.string().length(2).required(),
-    patient_id: joi.number().required()
+    patient_id: joi.number()
 })
 
 module.exports = addressSchema
