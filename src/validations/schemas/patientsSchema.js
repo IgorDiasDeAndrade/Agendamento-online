@@ -1,6 +1,6 @@
 const joi = require('joi')
 
-const patientsSchemas = joi.object({
+const patientsSchema = joi.object({
     cpf: joi.string().length(11).required().regex(/^\d+$/),
     name: joi.string().required(),
     birthday: joi.date().iso().required(),
@@ -11,4 +11,4 @@ const patientsSchemas = joi.object({
     obs: joi.string()
 })
 
-module.exports = patientsSchemas
+module.exports = patientsSchema

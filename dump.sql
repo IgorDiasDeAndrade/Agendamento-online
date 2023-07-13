@@ -34,15 +34,15 @@ create table "patients" (
   user_id integer references users(id)
 )
 
-create table "adresses" (
+create table "addresses" (
   id serial primary key,
   zip_code text,
   address text,
-  complement integer,
+  complement text,
   neighborhood text,
   location text,
   uf char(2),
-  patient_id integer references patients(id)
+  patient_id integer unique references patients(id)
 )
 
 create table "schedules" (
