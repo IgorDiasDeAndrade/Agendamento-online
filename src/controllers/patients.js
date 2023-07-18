@@ -34,6 +34,7 @@ const createPatient = async (req, res) => {
 const removePatient = async (req, res) => {
     const {id} = req.params
     try {
+        await knex('addresses').where({ patient_id: id }).del()
         await knex('patients').where({ id: id }).del()
         return res.status(200).json()
     } catch (error) {
