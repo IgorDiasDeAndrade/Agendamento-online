@@ -42,6 +42,16 @@ const removePatient = async (req, res) => {
     }
 }
 
+const showSpecificPatient = async (req, res) => {
+    const {id} = req.params
+    try {
+        const specificPatient = await knex('patients').where({ id: id })
+        return res.status(200).json({message: specificPatient})
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+}
+
 const editPatients = async (req, res) => {
     const {id} = req.params
     const {cpf, name, birthday, mothers_name, fathers_name, contact_number_1, contact_number_2, obs} = req.body
@@ -67,5 +77,6 @@ module.exports = {
     showPatients,
     createPatient,
     removePatient,
-    editPatients
+    editPatients,
+    showSpecificPatient
 }
