@@ -1,7 +1,7 @@
 const knex = require('../connection')
 
 const createAddress = async (req, res) => {
-    const {zip_code, address, complement, neighborhood, location, uf, patient_id} = req.body
+    const {zip_code, address, complement, neighborhood, location, number, uf, patient_id} = req.body
 
     try {
         await knex('addresses').insert({
@@ -10,6 +10,7 @@ const createAddress = async (req, res) => {
             complement,
             neighborhood,
             location,
+            number,
             uf,
             patient_id
         })
@@ -21,14 +22,15 @@ const createAddress = async (req, res) => {
 
 const editAddress = async (req, res) => {
     const {patient_id} = req.params
-    const {zip_code, address, complement, neighborhood, location, uf} = req.body
+    const {zip_code, address, complement, neighborhood, location, number, uf} = req.body
     try {
         await knex('addresses').update({
             zip_code,
             address, 
             complement, 
             neighborhood, 
-            location, 
+            location,
+            number, 
             uf
         }).where({patient_id: patient_id})
         return res.status(200).json()
@@ -57,6 +59,7 @@ const showPatientAndAddress = async (req, res) => {
           'addresses.address',
           'addresses.complement',
           'addresses.neighborhood',
+          'addresses.number',
           'addresses.location',
           'addresses.uf',
           'addresses.patient_id'

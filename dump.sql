@@ -41,6 +41,7 @@ create table "addresses" (
   complement text,
   neighborhood text,
   location text,
+  number text,
   uf char(2),
   patient_id integer unique references patients(id)
 )
