@@ -6,7 +6,8 @@ const bcrypt = require('bcrypt')
 
 const showUsers = async (req, res) => {
     try {
-        const allUsers = await knex('users')
+        const allUsers = await knex.select('id', 'name', 'username', 'email', 'phone', 'account_type_id')
+        .from('users')
         return res.status(200).json({message: allUsers})
     } catch (error) {
         return res.status(500).json({message: error.message})
