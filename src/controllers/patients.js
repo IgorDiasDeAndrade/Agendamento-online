@@ -56,6 +56,11 @@ const editPatients = async (req, res) => {
     const {id} = req.params
     const {cpf, name, birthday, mothers_name, fathers_name, contact_number_1, contact_number_2, obs} = req.body
     try {
+        const isPatient = await knex('patients').where({ id })
+        if (isPatient.length == 0){
+             return res.status(404).json({ message: 'Paciente não encontrado' })
+        }
+
         await knex('patients').update({
             cpf,
             name,
