@@ -8,6 +8,8 @@ const { authentication } = require('./middlewares/authentication')
 const { createPatient, showPatients, removePatient, editPatients, showSpecificPatient } = require('./controllers/patients')
 const { createAddress, editAddress, showPatientAndAddress } = require('./controllers/addresses')
 const addressSchema = require('./validations/schemas/addressSchema')
+const { newAgenda, showAgendas } = require('./controllers/agendas')
+const agendasSchema = require('./validations/schemas/agendasSchema')
 
 routes.get('/', (req, res)=>{
     res.send('Server up')
@@ -31,6 +33,9 @@ routes.put('/patient/:id', validateBodyRequisition(patientsSchema), editPatients
 routes.post('/patient/address', validateBodyRequisition(addressSchema), createAddress)
 routes.put('/patient/:patient_id/address', validateBodyRequisition(addressSchema), editAddress)
 routes.get('/patient/:patient_id/address', showPatientAndAddress)
+
+routes.get('/agendas', showAgendas)
+routes.post('/agenda', validateBodyRequisition(agendasSchema), newAgenda)
 
 
 module.exports = routes

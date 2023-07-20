@@ -11,6 +11,24 @@ VALUES ('Colaborador'),
 ('Visitante'),
 ('Demanda')
 
+CREATE TABLE clients (
+  id serial primary key,
+  cnpj text not null,
+  legal_name text not null,
+  trade_name text,
+  type text,
+  establishment_date date,
+  registration_status text,
+  share_capital numeric,
+  legal_nature text,
+  is_mei boolean,
+  phone text,
+  email text,
+  shareholder_structure text,
+  main_activity text,
+  secondary_activities text[]
+);
+
 create table "users" (
   id serial primary key,
   name text not null,
@@ -19,6 +37,7 @@ create table "users" (
   email text not null UNIQUE,
   phone text not null,
   account_type_id integer references account_types(id)
+  client_id integer references clients(id)
 )
 
 create table "patients" (
@@ -44,14 +63,27 @@ create table "addresses" (
   number text,
   uf char(2),
   patient_id integer unique references patients(id)
+  client_id integer unique references clients(id)
 )
 
-create table "schedules" (
-  id serial primary key,
-  name text not null,
-  schedule_date timestamp not null,
-  status boolean not null,
-  amount_vacancies integer,
-  vacancies_inserts integer,
-  patient_id integer references patients(id)
-)
+CREATE TABLE "agendas" (
+  agenda_id SERIAL PRIMARY KEY,
+  agenda_name VARCHAR(20),
+  agenda_type integer,
+  procedure_type VARCHAR(50),
+  start_time TIME,
+  end_time TIME,
+  date DATE,
+  slots_available integer not null,
+  additional_slots integer not null,
+  is_active boolean
+  user_id integer references users(id)
+);
+
+CREATE TABLE agenda_patient (
+  id SERIAL PRIMARY KEY,
+  agenda_id INT REFERENCES agendas(agenda_id),
+  patient_id INT REFERENCES patients(id),
+  appointment_time TIME,
+  presence BOOLEAN DEFAULT FALSE
+);
