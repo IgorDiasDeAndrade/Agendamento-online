@@ -2,7 +2,7 @@ const knex = require('../connection')
 
 const newAgenda = async (req, res) => {
     const {agenda_name, agenda_type, procedure_type, start_time, end_time, date, slots_available, additional_slots, is_active} = req.body;
-    
+
     try {
         if(start_time >= end_time){
             return res.status(400).json({message: 'Escolha um horário válido para a agenda.'})

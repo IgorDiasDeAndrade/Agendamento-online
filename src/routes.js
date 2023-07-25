@@ -10,17 +10,20 @@ const { createAddress, editAddress, showPatientAndAddress } = require('./control
 const addressSchema = require('./validations/schemas/addressSchema')
 const { newAgenda, showAgendas } = require('./controllers/agendas')
 const agendasSchema = require('./validations/schemas/agendasSchema')
+const { backOfficeLogin, newBackOffice } = require('./controllers/backoffice')
 
 routes.get('/', (req, res)=>{
     res.send('Server up')
 })
 
 routes.get('/users', showUsers)
-routes.post('/signup', validateBodyRequisition(usersSchema), userSignUp)
 routes.post('/login', userLogin)
+routes.post('/backoffice-login', backOfficeLogin)
+routes.post('/backoffice-signin', newBackOffice)
 
 routes.use(authentication)
 
+routes.post('/signup', validateBodyRequisition(usersSchema), userSignUp)
 routes.get('/user', userListing)
 routes.put('/user', updateUser)
 routes.patch('/user/:id', editAccountType)

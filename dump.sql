@@ -11,6 +11,15 @@ VALUES ('Colaborador'),
 ('Visitante'),
 ('Demanda')
 
+CREATE TABLE backoffice (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  username TEXT NOT NULL,
+  email TEXT NOT NULL,
+  password TEXT NOT NULL,
+  phone TEXT NOT NULL
+);
+
 CREATE TABLE clients (
   id serial primary key,
   cnpj text not null,
@@ -24,6 +33,7 @@ CREATE TABLE clients (
   is_mei boolean,
   phone text,
   email text,
+  password text not null,
   shareholder_structure text,
   main_activity text,
   secondary_activities text[]
