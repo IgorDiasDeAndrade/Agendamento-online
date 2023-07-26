@@ -19,9 +19,9 @@ routes.get('/', (req, res)=>{
 routes.get('/users', showUsers)
 routes.post('/login', userLogin)
 routes.post('/backoffice-login', backOfficeLogin)
-routes.post('/backoffice-signin', newBackOffice)
 
 routes.use(authentication)
+routes.post('/backoffice-signin', newBackOffice)
 
 routes.post('/signup', validateBodyRequisition(usersSchema), userSignUp)
 routes.get('/user', userListing)

@@ -32,6 +32,7 @@ const backOfficeLogin = async (req, res) => {
     }
 
     try {
+        const userType = 'backoffice'
         const backOfficeUser = await knex('backoffice').where({ email: email }).returning('*')
 
         if (backOfficeUser.length === 0) {
@@ -44,7 +45,7 @@ const backOfficeLogin = async (req, res) => {
             return res.status(400).json({ message: "E-mail ou senha incorretos." })
         }
 
-        const token = jwt.sign({ id: backOfficeUser[0].id }, secretPassword, { expiresIn: '8h' })
+        const token = jwt.sign({ id: backOfficeUser[0].id, userType  }, secretPassword, { expiresIn: '8h' })
 
         const { password: _, ...userData } = backOfficeUser[0]
 

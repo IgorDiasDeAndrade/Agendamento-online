@@ -19,13 +19,13 @@ const userSignUp = async (req, res) => {
 
     try {
 
-        const encriptedPassword = await bcrypt.hash(password, 10)
+        const encryptedPassword = await bcrypt.hash(password, 10)
         const account_type_id = 3
         
         await knex('users').insert({
             name,
             username,
-            password: encriptedPassword,
+            password: encryptedPassword,
             email,
             phone,
             account_type_id: account_type_id
@@ -46,6 +46,7 @@ const userLogin = async (req, res) => {
     }
 
     try {
+        const userType = 'user'
         const user = await knex('users').where({ email: email }).returning('*')
 
         if (user.length === 0) {
@@ -58,7 +59,7 @@ const userLogin = async (req, res) => {
             return res.status(400).json({ mensagem: "E-mail ou senha incorretos." })
         }
 
-        const token = jwt.sign({ id: user[0].id }, secretPassword, { expiresIn: '8h' })
+        const token = jwt.sign({ id: user[0].id, userType }, secretPassword, { expiresIn: '8h' })
 
         const { password: _, ...userData } = user[0]
 
@@ -73,23 +74,27 @@ const userLogin = async (req, res) => {
 }
 
 const userListing = async (req, res) => {
-    try {
-        const { password: _, ...currentUser } = req.user
-        return res.status(200).json(currentUser)
-    } catch (error) {
-        return res.status(500).json({ message: error.message })
+    if (req.userType === 'user') {
+        try {
+            const { password: _, ...currentUser } = req.user
+            return res.status(200).json(currentUser)
+        } catch (error) {
+            return res.status(500).json({ message: error.message })
+        }
+    } else {
+        return res.status(500).json({ message: 'Invalid user credentials' })
     }
 }
 
 const updateUser = async (req, res) => {
     const {name, password, email, phone} = req.body
     try {
-        const encriptedPassword = await bcrypt.hash(password, 10)
+        const encryptedPassword = await bcrypt.hash(password, 10)
 
         await knex('users').update({
             name: name,
             email: email,
-            password: encriptedPassword,
+            password: encryptedPassword,
             phone: phone
         }).where({ id: req.user.id })
         
