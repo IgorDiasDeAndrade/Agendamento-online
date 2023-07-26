@@ -11,6 +11,8 @@ const addressSchema = require('./validations/schemas/addressSchema')
 const { newAgenda, showAgendas } = require('./controllers/agendas')
 const agendasSchema = require('./validations/schemas/agendasSchema')
 const { backOfficeLogin, newBackOffice } = require('./controllers/backoffice')
+const clientsSchema = require('./validations/schemas/clientsSchema')
+const { newClient } = require('./controllers/clients')
 
 routes.get('/', (req, res)=>{
     res.send('Server up')
@@ -22,6 +24,7 @@ routes.post('/backoffice-login', backOfficeLogin)
 
 routes.use(authentication)
 routes.post('/backoffice-signin', newBackOffice)
+routes.post('/client', validateBodyRequisition(clientsSchema), newClient)
 
 routes.post('/signup', validateBodyRequisition(usersSchema), userSignUp)
 routes.get('/user', userListing)
