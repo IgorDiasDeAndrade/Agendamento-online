@@ -12,7 +12,7 @@ const { newAgenda, showAgendas } = require('./controllers/agendas')
 const agendasSchema = require('./validations/schemas/agendasSchema')
 const { backOfficeLogin, newBackOffice } = require('./controllers/backoffice')
 const clientsSchema = require('./validations/schemas/clientsSchema')
-const { newClient } = require('./controllers/clients')
+const { newClient, clientLogin } = require('./controllers/clients')
 
 routes.get('/', (req, res)=>{
     res.send('Server up')
@@ -21,6 +21,7 @@ routes.get('/', (req, res)=>{
 routes.get('/users', showUsers)
 routes.post('/login', userLogin)
 routes.post('/backoffice-login', backOfficeLogin)
+routes.post('/client-login', clientLogin)
 
 routes.use(authentication)
 routes.post('/backoffice-signin', newBackOffice)
