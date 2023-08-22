@@ -1,5 +1,14 @@
 const knex = require('../connection')
 
+const { differenceInDays, addDays, format, isSameDay} = require('date-fns')
+
+
+const getDateRange = (startDate, endDate) => {
+  const days = differenceInDays(endDate, startDate)
+
+  return [...Array(days + 1).keys()].map(i => format(addDays(startDate, i), 'MM/dd/yyyy'))
+}
+
 const newAgenda = async (req, res) => {
     const {agenda_name, agenda_type, procedure_type, start_time, end_time, date, slots_available, additional_slots, is_active} = req.body;
 
@@ -33,9 +42,44 @@ const newAgenda = async (req, res) => {
 }
 
 const showAgendas = async (req, res) => {
+    const { q = '', status = '', dates = [] } = req.query
+    const queryLowered = q.toLowerCase()
     try {
         const allAgendas = await knex('agendas')
-        return res.status(200).json(allAgendas)
+
+
+        const filteredData = allAgendas.filter(agenda => {
+            const agendaDate = new Date(agenda.date);
+          
+            // Verifica se as datas estão no intervalo, se especificado
+            if (dates.length > 0) {
+              const [start, end] = dates;
+              const range = getDateRange(new Date(start), new Date(end));
+              if (!range.some(date => isSameDay(new Date(date), agendaDate))) {
+                return false;
+              }
+            }
+          
+            // Verifica os outros critérios de filtro
+            return (
+              (agenda.procedure_type.toLowerCase().includes(queryLowered) ||
+                agenda.agenda_name.toLowerCase().includes(queryLowered) ||
+                String(agenda.agenda_id).toLowerCase().includes(queryLowered) ||
+                String(agenda.start_time).toLowerCase().includes(queryLowered) ||
+                String(agenda.slots_available).toLowerCase().includes(queryLowered)) &&
+              String(agenda.is_active) === (status.toLowerCase() || String(agenda.is_active))
+            );
+          });
+
+        const resp = {
+            params: req.query,
+            allData: allAgendas,
+            invoices: filteredData,
+            total: filteredData.length
+        }
+
+
+        return res.status(200).json(resp)
     } catch (error) {
         return res.status(500).json({message: error.message})
     }
