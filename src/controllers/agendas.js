@@ -51,7 +51,6 @@ const showAgendas = async (req, res) => {
         const filteredData = allAgendas.filter(agenda => {
             const agendaDate = new Date(agenda.date);
           
-            // Verifica se as datas estão no intervalo, se especificado
             if (dates.length > 0) {
               const [start, end] = dates;
               const range = getDateRange(new Date(start), new Date(end));
@@ -60,7 +59,6 @@ const showAgendas = async (req, res) => {
               }
             }
           
-            // Verifica os outros critérios de filtro
             return (
               (agenda.procedure_type.toLowerCase().includes(queryLowered) ||
                 agenda.agenda_name.toLowerCase().includes(queryLowered) ||
