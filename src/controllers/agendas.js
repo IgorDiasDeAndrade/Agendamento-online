@@ -83,7 +83,44 @@ const showAgendas = async (req, res) => {
     }
 }
 
+const insertPatient = async (req, res) => {
+  const { agenda_id, patient_id, appointment_time } = req.body
+  try {
+    const insertedPatitent = await knex('agenda_patient').insert({
+      agenda_id,
+      patient_id, 
+      appointment_time
+    }).returning('*')
+
+    return res.status(200).json(insertedPatitent)
+  } catch (error) {
+    return res.status(500).json({message: error.message})
+  }
+}
+
+const showAgendaPatients = async (req, res) => {
+  const { id } = req.params
+
+  await knex('agenda_patient as ap')
+  .select('p.*')
+  .join('patients as p', 'ap.patient_id', 'p.id')
+  .where('ap.agenda_id', id)
+  .then((results) => {
+    return res.status(200).json(results)
+  })
+  .catch((err) => {
+    return res.status(500).json({message: err})
+  })
+  .finally(() => {
+    // Feche a conexão com o banco de dados quando terminar
+    knex.destroy();
+  });
+
+}
+
 module.exports = { 
     newAgenda,
-    showAgendas
+    showAgendas,
+    insertPatient,
+    showAgendaPatients
  }
