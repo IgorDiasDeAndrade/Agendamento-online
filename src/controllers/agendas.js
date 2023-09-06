@@ -85,7 +85,22 @@ const showAgendas = async (req, res) => {
 
 const insertPatient = async (req, res) => {
   const { agenda_id, patient_id, appointment_time } = req.body
+
+  const scheduledPatients = await knex('agenda_patient as ap')
+  .select('p.*')
+  .join('patients as p', 'ap.patient_id', 'p.id')
+  .where('ap.agenda_id', agenda_id)
+
+  const numberOfPatients = scheduledPatients.length + 1
+  
+  const slots_available = await knex.select('slots_available').from('agendas').where('agenda_id', agenda_id)
+
   try {
+
+    if (numberOfPatients > slots_available[0].slots_available){
+      return res.status(401).json({message: 'Esta agenda está cheia!'})
+    }
+
     const insertedPatitent = await knex('agenda_patient').insert({
       agenda_id,
       patient_id, 
@@ -117,6 +132,7 @@ const showAgendaPatients = async (req, res) => {
   });
 
 }
+
 
 module.exports = { 
     newAgenda,
