@@ -127,10 +127,19 @@ const showAgendaPatients = async (req, res) => {
     return res.status(500).json({message: err})
   })
   .finally(() => {
-    // Feche a conexão com o banco de dados quando terminar
     knex.destroy();
   });
 
+}
+
+const showAgendaById = async (req, res) => {
+  const {id} = req.params
+  try {
+    const agenda = await knex('agendas').where('agenda_id', id)
+    return res.status(200).json(agenda)
+  } catch (error) {
+    return res.status(500).json({message: error.message})
+  }
 }
 
 
@@ -138,5 +147,6 @@ module.exports = {
     newAgenda,
     showAgendas,
     insertPatient,
-    showAgendaPatients
+    showAgendaPatients,
+    showAgendaById
  }
