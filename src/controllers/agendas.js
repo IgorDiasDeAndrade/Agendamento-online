@@ -91,6 +91,12 @@ const insertPatient = async (req, res) => {
   .join('patients as p', 'ap.patient_id', 'p.id')
   .where('ap.agenda_id', agenda_id)
 
+  for (let patient of scheduledPatients){
+    if(patient.id == patient_id){
+      return res.status(401).json({message: 'Paciente já está cadastrado na agenda!'})
+    }
+  }
+
   const numberOfPatients = scheduledPatients.length + 1
   
   const slots_available = await knex.select('slots_available').from('agendas').where('agenda_id', agenda_id)
@@ -116,30 +122,21 @@ const insertPatient = async (req, res) => {
 const showAgendaPatients = async (req, res) => {
   const { id } = req.params
 
-  await knex('agenda_patient as ap')
-  .select('p.*')
-  .join('patients as p', 'ap.patient_id', 'p.id')
-  .where('ap.agenda_id', id)
-  .then((results) => {
-    return res.status(200).json(results)
-  })
-  .catch((err) => {
-    return res.status(500).json({message: err})
-  })
-  .finally(() => {
-    knex.destroy();
-  });
-
-}
-
-const showAgendaById = async (req, res) => {
-  const {id} = req.params
   try {
+
     const agenda = await knex('agendas').where('agenda_id', id)
-    return res.status(200).json(agenda)
+    const agendaPatients = await knex('agenda_patient as ap')
+    .select('p.*')
+    .join('patients as p', 'ap.patient_id', 'p.id')
+    .where('ap.agenda_id', id)
+    
+    const response = {agenda: agenda, patients: agendaPatients}
+
+    return res.status(200).json(response)
   } catch (error) {
     return res.status(500).json({message: error.message})
   }
+
 }
 
 
@@ -147,6 +144,5 @@ module.exports = {
     newAgenda,
     showAgendas,
     insertPatient,
-    showAgendaPatients,
-    showAgendaById
+    showAgendaPatients
  }

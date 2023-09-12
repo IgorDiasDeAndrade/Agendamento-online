@@ -8,7 +8,7 @@ const { authentication } = require('./middlewares/authentication')
 const { createPatient, showPatients, removePatient, editPatients, showSpecificPatient } = require('./controllers/patients')
 const { createAddress, editAddress, showPatientAndAddress } = require('./controllers/addresses')
 const addressSchema = require('./validations/schemas/addressSchema')
-const { newAgenda, showAgendas, insertPatient, showAgendaPatients, showAgendaById } = require('./controllers/agendas')
+const { newAgenda, showAgendas, insertPatient, showAgendaPatients} = require('./controllers/agendas')
 const agendasSchema = require('./validations/schemas/agendasSchema')
 const { backOfficeLogin, newBackOffice } = require('./controllers/backoffice')
 const clientsSchema = require('./validations/schemas/clientsSchema')
@@ -45,7 +45,6 @@ routes.get('/agendas', showAgendas)
 routes.post('/agenda', validateBodyRequisition(agendasSchema), newAgenda)
 routes.post('/agenda/patient/insert', insertPatient)
 routes.get('/agenda/patients/:id', showAgendaPatients)
-routes.get('/agenda/:id', showAgendaById)
 
 
 module.exports = routes
