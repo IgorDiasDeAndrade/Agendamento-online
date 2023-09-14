@@ -9,5 +9,5 @@ app.use(cors())
 app.use(routes)
 
 app.listen(process.env.PORT || 3000, ()=>{
-    console.log('up in http://localhost:3001')
+    console.log(`up in http://localhost:${process.env.PORT || 3000}`)
 })
