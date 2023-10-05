@@ -3,14 +3,14 @@ const knex = require('../connection')
 const showPatients = async (req, res) => {
     try {
         const allPatients = await knex('patients')
-        return res.status(200).json({ message: allPatients})
+        return res.status(200).json({ message: allPatients })
     } catch (error) {
-        return res.status(500).json({message: error.message})
+        return res.status(500).json({ message: error.message })
     }
 }
 
 const createPatient = async (req, res) => {
-    const {cpf, name, birthday, mothers_name, fathers_name, contact_number_1, contact_number_2, obs} = req.body
+    const { cpf, name, birthday, mothers_name, fathers_name, contact_number_1, contact_number_2, obs, zip_code, address, complement, neighborhood, location, number, uf } = req.body
 
     try {
         const newPatient = await knex('patients').insert({
@@ -24,18 +24,31 @@ const createPatient = async (req, res) => {
             obs,
             user_id: req.user.id
         }).returning('*')
-        
-        return res.status(200).json({newPatient})
+
+        const newAddress = await knex('addresses').insert({
+            zip_code,
+            address,
+            complement,
+            neighborhood,
+            location,
+            number,
+            uf,
+            patient_id: newPatient[0].id,
+        }).returning('*')
+
+
+
+        return res.status(200).json({ newPatient, newAddress })
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
 }
 
 const removePatient = async (req, res) => {
-    const {id} = req.params
+    const { id } = req.params
     try {
         const isPatient = await knex('patients').where({ id })
-        if (isPatient.length == 0){
+        if (isPatient.length == 0) {
             return res.status(404).json({ message: 'Paciente não encontrado' })
         }
         await knex('addresses').where({ patient_id: id }).del()
@@ -47,22 +60,22 @@ const removePatient = async (req, res) => {
 }
 
 const showSpecificPatient = async (req, res) => {
-    const {id} = req.params
+    const { id } = req.params
     try {
         const specificPatient = await knex('patients').where({ id: id })
-        return res.status(200).json({message: specificPatient})
+        return res.status(200).json({ message: specificPatient })
     } catch (error) {
         return res.status(500).json(error.message)
     }
 }
 
 const editPatients = async (req, res) => {
-    const {id} = req.params
-    const {cpf, name, birthday, mothers_name, fathers_name, contact_number_1, contact_number_2, obs} = req.body
+    const { id } = req.params
+    const { cpf, name, birthday, mothers_name, fathers_name, contact_number_1, contact_number_2, obs } = req.body
     try {
         const isPatient = await knex('patients').where({ id })
-        if (isPatient.length == 0){
-             return res.status(404).json({ message: 'Paciente não encontrado' })
+        if (isPatient.length == 0) {
+            return res.status(404).json({ message: 'Paciente não encontrado' })
         }
 
         await knex('patients').update({
@@ -74,7 +87,7 @@ const editPatients = async (req, res) => {
             contact_number_1,
             contact_number_2,
             obs
-        }).where({id: id})
+        }).where({ id: id })
         return res.status(200).json()
     } catch (error) {
         return res.status(500).json({ message: error.message })
