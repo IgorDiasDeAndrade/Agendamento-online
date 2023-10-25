@@ -1,6 +1,7 @@
 const express = require('express')
 const routes = express()
-const {showUsers, userSignUp, userLogin, userListing, updateUser, editAccountType} = require('./controllers/users')
+const cors = require('cors')
+const { showUsers, userSignUp, userLogin, userListing, updateUser, editAccountType } = require('./controllers/users')
 const validateBodyRequisition = require('./middlewares/validateBodyRequisition')
 const usersSchema = require('./validations/schemas/usersSchema')
 const patientsSchema = require('./validations/schemas/patientsSchema')
@@ -8,13 +9,15 @@ const { authentication } = require('./middlewares/authentication')
 const { createPatient, showPatients, removePatient, editPatients, showSpecificPatient } = require('./controllers/patients')
 const { createAddress, editAddress, showPatientAndAddress } = require('./controllers/addresses')
 const addressSchema = require('./validations/schemas/addressSchema')
-const { newAgenda, showAgendas, insertPatient, showAgendaPatients} = require('./controllers/agendas')
+const { newAgenda, showAgendas, insertPatient, showAgendaPatients, excludePatient, updateAgenda, deleteAgenda } = require('./controllers/agendas')
 const agendasSchema = require('./validations/schemas/agendasSchema')
 const { backOfficeLogin, newBackOffice } = require('./controllers/backoffice')
 const clientsSchema = require('./validations/schemas/clientsSchema')
 const { newClient, clientLogin } = require('./controllers/clients')
 
-routes.get('/', (req, res)=>{
+
+routes.use(cors())
+routes.get('/', (req, res) => {
     res.send('Server up')
 })
 
@@ -43,8 +46,11 @@ routes.get('/patient/:patient_id/address', showPatientAndAddress)
 
 routes.get('/agendas', showAgendas)
 routes.post('/agenda', validateBodyRequisition(agendasSchema), newAgenda)
+routes.put('/agenda/:id', validateBodyRequisition(agendasSchema), updateAgenda)
+routes.delete('/agenda/:id', deleteAgenda)
 routes.post('/agenda/patient/insert', insertPatient)
 routes.get('/agenda/patients/:id', showAgendaPatients)
+routes.delete('/agenda/patient/:id', excludePatient)
 
 
 module.exports = routes
